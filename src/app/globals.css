@@ -24,3 +24,24 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* =========================
+   PRICE MARQUEE ANIMATION
+========================= */
+
+@keyframes marqueeMove {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-animation {
+  display: flex;
+  width: max-content;
+  animation: marqueeMove 20s linear infinite;
+  will-change: transform;
+}
