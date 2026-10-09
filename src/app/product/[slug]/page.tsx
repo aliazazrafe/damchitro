@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { headers } from "next/headers";
+import { notFound, redirect } from "next/navigation";
+import { auth } from "../../../lib/auth";
 
 type Change = {
   dir: "up" | "down" | "flat";
@@ -290,6 +292,26 @@ export default async function ProductDetailsPage({
 }) {
   const { slug } = await params;
 
+  /* ==============================
+     AUTHENTICATION CHECK
+  ================================ */
+
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    redirect(
+      `/signin?callbackURL=${encodeURIComponent(
+        `/product/${slug}`
+      )}&reason=protected`
+    );
+  }
+
+  /* ==============================
+     GET PRODUCT
+  ================================ */
+
   const product = await getProductBySlug(slug);
 
   if (!product) {
@@ -380,17 +402,17 @@ export default async function ProductDetailsPage({
     direction === "up"
       ? {
           symbol: "▲",
-          className: "text-[#e84c4c]",
-        }
-      : direction === "down"
-      ? {
-          symbol: "▼",
           className: "text-[#009846]",
         }
-      : {
-          symbol: "—",
-          className: "text-[#777777]",
-        };
+      : direction === "down"
+        ? {
+            symbol: "▼",
+            className: "text-[#e84c4c]",
+          }
+        : {
+            symbol: "—",
+            className: "text-[#777777]",
+          };
 
   return (
     <main className="min-h-screen bg-[#f1f6f2]">
@@ -620,9 +642,11 @@ export default async function ProductDetailsPage({
             </div>
           ) : (
             <div className="rounded-[8px] border border-[#dfe6e1] px-4 py-7 text-center">
+
               <p className="text-[9px] text-[#737c76]">
                 Market information is currently unavailable.
               </p>
+
             </div>
           )}
 

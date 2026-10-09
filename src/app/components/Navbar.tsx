@@ -1,16 +1,69 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { authClient } from "../../lib/auth-client";
 
 export default function Navbar() {
+  const router = useRouter();
+
+  const { data: session, isPending } = authClient.useSession();
+
+  const [profileOpen, setProfileOpen] = useState(false);
+
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  /* =========================================
+     CATEGORIES
+  ========================================= */
+
   const categories = [
-    { name: "Rice", icon: "🍚", href: "/category/chal" },
-    { name: "Lentils", icon: "🫘", href: "/category/dal" },
-    { name: "Oil", icon: "🛢️", href: "/category/tel" },
-    { name: "Vegetables", icon: "🥬", href: "/category/sobji" },
-    { name: "Fish", icon: "🐟", href: "/category/mach" },
-    { name: "Meat", icon: "🍗", href: "/category/mangsho" },
-    { name: "Eggs-Milk", icon: "🥚", href: "/category/dim-dudh" },
-    { name: "Spices", icon: "🌶️", href: "/category/mosla" },
+    {
+      name: "Rice",
+      icon: "🍚",
+      href: "/category/chal",
+    },
+    {
+      name: "Lentils",
+      icon: "🫘",
+      href: "/category/dal",
+    },
+    {
+      name: "Oil",
+      icon: "🛢️",
+      href: "/category/tel",
+    },
+    {
+      name: "Vegetables",
+      icon: "🥬",
+      href: "/category/sobji",
+    },
+    {
+      name: "Fish",
+      icon: "🐟",
+      href: "/category/mach",
+    },
+    {
+      name: "Meat",
+      icon: "🍗",
+      href: "/category/mangsho",
+    },
+    {
+      name: "Eggs-Milk",
+      icon: "🥚",
+      href: "/category/dim-dudh",
+    },
+    {
+      name: "Spices",
+      icon: "🌶️",
+      href: "/category/mosla",
+    },
   ];
+
+  /* =========================================
+     PRICE TICKER
+  ========================================= */
 
   const tickerItems = [
     {
@@ -18,55 +71,132 @@ export default function Navbar() {
       name: "Miniket Rice",
       price: "৳78/kg",
       change: "▲ 2.5%",
-      color: "text-red-500",
+      color: "text-green-600",
     },
     {
       icon: "🫘",
       name: "Red Lentils",
       price: "৳130/kg",
       change: "▼ 2.1%",
-      color: "text-green-600",
+      color: "text-red-500",
     },
     {
       icon: "🛢️",
       name: "Soybean Oil",
       price: "৳175/litre",
       change: "▲ 1.5%",
-      color: "text-red-500",
+      color: "text-green-600",
     },
     {
       icon: "🥔",
       name: "Potato",
       price: "৳45/kg",
       change: "▼ 3.2%",
-      color: "text-green-600",
+      color: "text-red-500",
     },
     {
       icon: "🐟",
       name: "Hilsa Fish",
       price: "৳1200/kg",
       change: "▲ 4.1%",
-      color: "text-red-500",
+      color: "text-green-600",
     },
     {
       icon: "🍗",
       name: "Chicken",
       price: "৳190/kg",
       change: "▼ 1.8%",
-      color: "text-green-600",
+      color: "text-red-500",
     },
   ];
 
+  /* =========================================
+     USER INFORMATION
+  ========================================= */
+
+  const userName =
+    session?.user?.name?.trim() ||
+    session?.user?.email?.split("@")[0] ||
+    "User";
+
+  const firstName =
+    userName.split(" ")[0] || "User";
+
+  const firstLetter =
+    firstName.charAt(0).toUpperCase();
+
+  const userEmail =
+    session?.user?.email || "";
+
+  const userImage =
+    session?.user?.image || "";
+
+  /* =========================================
+     CLOSE DROPDOWN WHEN CLICKING OUTSIDE
+  ========================================= */
+
+  useEffect(() => {
+    const handleClickOutside = (
+      event: MouseEvent
+    ) => {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(
+          event.target as Node
+        )
+      ) {
+        setProfileOpen(false);
+      }
+    };
+
+    document.addEventListener(
+      "mousedown",
+      handleClickOutside
+    );
+
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+    };
+  }, []);
+
+  /* =========================================
+     SIGN OUT
+  ========================================= */
+
+  const handleSignOut = async () => {
+    try {
+      await authClient.signOut();
+
+      setProfileOpen(false);
+
+      router.push("/");
+      router.refresh();
+    } catch (error) {
+      console.error(
+        "Sign out failed:",
+        error
+      );
+    }
+  };
+
   return (
-    <header className="w-full bg-white">
+    <header className="relative z-50 w-full bg-white">
+      {/* =====================================
+          TOP NAVBAR
+      ====================================== */}
 
-      {/* ================= TOP NAVBAR ================= */}
       <div className="mx-auto flex h-[64px] w-full max-w-[900px] items-center justify-between px-4">
+        {/* LEFT SIDE */}
 
-        {/* Left Side */}
-        <Link href="/" className="flex items-center gap-3">
+        <Link
+          href="/"
+          className="flex items-center gap-3"
+        >
+          {/* LOGO */}
 
-          {/* Logo */}
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#009846]">
             <svg
               width="20"
@@ -84,12 +214,24 @@ export default function Navbar() {
                 strokeLinejoin="round"
               />
 
-              <circle cx="9" cy="19" r="1.2" fill="white" />
-              <circle cx="18" cy="19" r="1.2" fill="white" />
+              <circle
+                cx="9"
+                cy="19"
+                r="1.2"
+                fill="white"
+              />
+
+              <circle
+                cx="18"
+                cy="19"
+                r="1.2"
+                fill="white"
+              />
             </svg>
           </div>
 
-          {/* Brand + Date */}
+          {/* BRAND + DATE */}
+
           <div>
             <h1 className="text-[16px] font-bold leading-[19px] text-[#181818]">
               Bazar Dor
@@ -99,126 +241,354 @@ export default function Navbar() {
               Wednesday, 7 October 2026
             </p>
           </div>
-
         </Link>
 
-        {/* Right Side */}
-        <div className="flex items-center gap-6">
+        {/* =====================================
+            RIGHT SIDE
+        ====================================== */}
 
-          <Link
-            href="/signin"
-            className="text-[12px] font-medium text-[#222222] transition-colors hover:text-[#009846]"
-          >
-            Sign In
-          </Link>
+        <div className="flex items-center">
+          {/* SESSION LOADING */}
 
-          <Link
-            href="/signup"
-            className="rounded-[5px] bg-[#009846] px-4 py-[9px] text-[12px] font-medium text-white transition-colors hover:bg-[#00843d]"
-          >
-            Sign Up
-          </Link>
+          {isPending ? (
+            <div className="flex items-center gap-2">
+              <div className="h-[32px] w-[32px] animate-pulse rounded-full bg-[#eeeeee]" />
 
+              <div className="h-[12px] w-[55px] animate-pulse rounded bg-[#eeeeee]" />
+            </div>
+          ) : session?.user ? (
+            /* =================================
+               LOGGED IN USER
+            ================================== */
+
+            <div
+              ref={profileRef}
+              className="relative"
+            >
+              {/* =============================
+                  PROFILE BUTTON
+              ============================== */}
+
+              <button
+                type="button"
+                onClick={() =>
+                  setProfileOpen(
+                    (previous) => !previous
+                  )
+                }
+                className="flex items-center gap-2 rounded-[7px] px-2 py-[6px] transition-colors hover:bg-[#f6f8f6]"
+                aria-expanded={profileOpen}
+                aria-label="Open profile menu"
+              >
+                {/* =============================
+                    USER AVATAR
+
+                    Google / GitHub image থাকলে
+                    real image দেখাবে।
+
+                    Image না থাকলে
+                    নামের first letter দেখাবে।
+                ============================== */}
+
+                {userImage ? (
+                  <img
+                    src={userImage}
+                    alt={`${userName} profile`}
+                    className="h-[32px] w-[32px] shrink-0 rounded-full border border-[#e5e5e5] object-cover"
+                  />
+                ) : (
+                  <div className="flex h-[32px] w-[32px] shrink-0 items-center justify-center rounded-full bg-[#e7f5eb] text-[12px] font-bold text-[#009846]">
+                    {firstLetter}
+                  </div>
+                )}
+
+                {/* FIRST NAME */}
+
+                <span className="max-w-[100px] truncate text-[12px] font-medium text-[#333333]">
+                  {firstName}
+                </span>
+
+                {/* DROPDOWN ARROW */}
+
+                <svg
+                  width="10"
+                  height="10"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`transition-transform duration-200 ${
+                    profileOpen
+                      ? "rotate-180"
+                      : ""
+                  }`}
+                >
+                  <path
+                    d="M3 4.5L6 7.5L9 4.5"
+                    stroke="#555555"
+                    strokeWidth="1.3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+
+              {/* =================================
+                  PROFILE DROPDOWN
+              ================================== */}
+
+              {profileOpen && (
+                <div className="absolute right-0 top-[48px] z-[100] w-[210px] overflow-hidden rounded-[12px] border border-[#e5e5e5] bg-white shadow-[0_6px_20px_rgba(0,0,0,0.15)]">
+                  {/* =============================
+                      USER DETAILS
+                  ============================== */}
+
+                  <div className="border-b border-[#eeeeee] px-4 py-4">
+                    {/* DROPDOWN USER INFO */}
+
+                    <div className="flex items-center gap-3">
+                      {/* SMALL AVATAR */}
+
+                      {userImage ? (
+                        <img
+                          src={userImage}
+                          alt={`${userName} profile`}
+                          className="h-[36px] w-[36px] shrink-0 rounded-full border border-[#e5e5e5] object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-[36px] w-[36px] shrink-0 items-center justify-center rounded-full bg-[#e7f5eb] text-[13px] font-bold text-[#009846]">
+                          {firstLetter}
+                        </div>
+                      )}
+
+                      {/* NAME + EMAIL */}
+
+                      <div className="min-w-0">
+                        <p className="truncate text-[13px] font-semibold leading-[18px] text-[#282828]">
+                          {userName}
+                        </p>
+
+                        <p className="mt-[2px] truncate text-[10px] leading-[14px] text-[#777777]">
+                          {userEmail}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* =============================
+                      MY PROFILE
+                  ============================== */}
+
+                  <Link
+                    href="/profile"
+                    onClick={() =>
+                      setProfileOpen(false)
+                    }
+                    className="flex items-center gap-2.5 px-4 py-3 text-[12px] font-medium text-[#444444] transition-colors hover:bg-[#f6f8f6]"
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                    >
+                      <circle
+                        cx="12"
+                        cy="8"
+                        r="4"
+                        stroke="#3977b7"
+                        strokeWidth="1.8"
+                      />
+
+                      <path
+                        d="M4.5 20C5.2 16.5 8.1 14 12 14C15.9 14 18.8 16.5 19.5 20"
+                        stroke="#3977b7"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+
+                    <span>
+                      My Profile
+                    </span>
+                  </Link>
+
+                  {/* =============================
+                      SIGN OUT
+                  ============================== */}
+
+                  <button
+                    type="button"
+                    onClick={handleSignOut}
+                    className="flex w-full items-center gap-2.5 px-4 py-3 text-left text-[12px] font-medium text-[#e34b4b] transition-colors hover:bg-[#fff5f5]"
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M10 17L15 12L10 7"
+                        stroke="currentColor"
+                        strokeWidth="1.7"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+
+                      <path
+                        d="M15 12H3"
+                        stroke="currentColor"
+                        strokeWidth="1.7"
+                        strokeLinecap="round"
+                      />
+
+                      <path
+                        d="M13 4H19C20.1 4 21 4.9 21 6V18C21 19.1 20.1 20 19 20H13"
+                        stroke="currentColor"
+                        strokeWidth="1.7"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+
+                    <span>
+                      Sign Out
+                    </span>
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            /* =================================
+               LOGGED OUT USER
+            ================================== */
+
+            <div className="flex items-center gap-6">
+              <Link
+                href="/signin"
+                className="text-[12px] font-medium text-[#222222] transition-colors hover:text-[#009846]"
+              >
+                Sign In
+              </Link>
+
+              <Link
+                href="/signup"
+                className="rounded-[5px] bg-[#009846] px-4 py-[9px] text-[12px] font-medium text-white transition-colors hover:bg-[#00843d]"
+              >
+                Sign Up
+              </Link>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* ================= CATEGORY ROW ================= */}
+      {/* =====================================
+          CATEGORY ROW
+      ====================================== */}
+
       <div className="border-y border-[#eeeeee] bg-white">
-
-        <nav className="mx-auto flex w-full max-w-[900px] items-center px-4">
-
+        <nav className="mx-auto flex w-full max-w-[900px] items-center overflow-x-auto px-4">
           <div className="flex min-w-max items-center gap-7 py-[10px]">
+            {categories.map(
+              (category) => (
+                <Link
+                  key={category.name}
+                  href={category.href}
+                  className="flex items-center gap-[5px] whitespace-nowrap text-[12px] font-medium text-[#333333] transition-colors hover:text-[#009846]"
+                >
+                  <span className="text-[13px]">
+                    {category.icon}
+                  </span>
 
-            {categories.map((category) => (
-              <Link
-                key={category.name}
-                href={category.href}
-                className="flex items-center gap-[5px] whitespace-nowrap text-[12px] font-medium text-[#333333] transition-colors hover:text-[#009846]"
-              >
-                <span className="text-[13px]">
-                  {category.icon}
-                </span>
-
-                <span>{category.name}</span>
-              </Link>
-            ))}
-
+                  <span>
+                    {category.name}
+                  </span>
+                </Link>
+              )
+            )}
           </div>
         </nav>
       </div>
 
-      {/* ================= PRICE MARQUEE ================= */}
+      {/* =====================================
+          PRICE MARQUEE
+      ====================================== */}
+
       <div className="w-full overflow-hidden border-b border-[#e7e7e7] bg-[#f8fbf9]">
-
-        {/* Moving Container */}
         <div className="marquee-animation">
+          {/* =============================
+              FIRST COPY
+          ============================== */}
 
-          {/* First Copy */}
           <div className="flex shrink-0 items-center">
+            {tickerItems.map(
+              (item, index) => (
+                <div
+                  key={`ticker-first-${index}`}
+                  className="flex shrink-0 items-center gap-2 whitespace-nowrap border-r border-[#e5e5e5] px-6 py-[8px] text-[11px]"
+                >
+                  <span className="text-[13px]">
+                    {item.icon}
+                  </span>
 
-            {tickerItems.map((item, index) => (
-              <div
-                key={`ticker-first-${index}`}
-                className="flex shrink-0 items-center gap-2 whitespace-nowrap border-r border-[#e5e5e5] px-6 py-[8px] text-[11px]"
-              >
+                  <span className="font-medium text-[#333333]">
+                    {item.name}
+                  </span>
 
-                <span className="text-[13px]">
-                  {item.icon}
-                </span>
+                  <span className="text-[#555555]">
+                    {item.price}
+                  </span>
 
-                <span className="font-medium text-[#333333]">
-                  {item.name}
-                </span>
-
-                <span className="text-[#555555]">
-                  {item.price}
-                </span>
-
-                <span className={`font-semibold ${item.color}`}>
-                  {item.change}
-                </span>
-
-              </div>
-            ))}
-
+                  <span
+                    className={`font-semibold ${item.color}`}
+                  >
+                    {item.change}
+                  </span>
+                </div>
+              )
+            )}
           </div>
 
-          {/* Second Copy */}
+          {/* =============================
+              SECOND COPY
+          ============================== */}
+
           <div
             className="flex shrink-0 items-center"
             aria-hidden="true"
           >
+            {tickerItems.map(
+              (item, index) => (
+                <div
+                  key={`ticker-second-${index}`}
+                  className="flex shrink-0 items-center gap-2 whitespace-nowrap border-r border-[#e5e5e5] px-6 py-[8px] text-[11px]"
+                >
+                  <span className="text-[13px]">
+                    {item.icon}
+                  </span>
 
-            {tickerItems.map((item, index) => (
-              <div
-                key={`ticker-second-${index}`}
-                className="flex shrink-0 items-center gap-2 whitespace-nowrap border-r border-[#e5e5e5] px-6 py-[8px] text-[11px]"
-              >
+                  <span className="font-medium text-[#333333]">
+                    {item.name}
+                  </span>
 
-                <span className="text-[13px]">
-                  {item.icon}
-                </span>
+                  <span className="text-[#555555]">
+                    {item.price}
+                  </span>
 
-                <span className="font-medium text-[#333333]">
-                  {item.name}
-                </span>
-
-                <span className="text-[#555555]">
-                  {item.price}
-                </span>
-
-                <span className={`font-semibold ${item.color}`}>
-                  {item.change}
-                </span>
-
-              </div>
-            ))}
-
+                  <span
+                    className={`font-semibold ${item.color}`}
+                  >
+                    {item.change}
+                  </span>
+                </div>
+              )
+            )}
           </div>
-
         </div>
       </div>
-
     </header>
   );
 }
