@@ -85,15 +85,22 @@ function getEnglishUnit(unit: string) {
 }
 
 function getProductName(product: Product) {
-  if (product.nameEn) return product.nameEn;
+  if (product.nameEn) {
+    return product.nameEn;
+  }
 
-  if (product.productNameEn) return product.productNameEn;
+  if (product.productNameEn) {
+    return product.productNameEn;
+  }
 
-  if (product.name) return product.name;
+  if (product.name) {
+    return product.name;
+  }
 
-  if (product.productName) return product.productName;
+  if (product.productName) {
+    return product.productName;
+  }
 
-  // English fallback from slug
   if (product.slug) {
     return product.slug
       .split("-")
@@ -112,11 +119,12 @@ export default async function PriceDecreased() {
   const products = await getProducts();
 
   /*
-    Top 6 fallers
+    README:
+    Top 6 price fallers
 
     API:
     change.dir = "down"
-    change.pct = negative percentage
+    change.pct = percentage
   */
 
   const decreasedProducts = products
@@ -133,84 +141,149 @@ export default async function PriceDecreased() {
     .slice(0, 6);
 
   return (
-    <section className="bg-[#f1f8f3] px-4 py-6">
+    <section className="bg-[#f1f8f3] px-3 py-5 sm:px-4 sm:py-6">
       <div className="mx-auto w-full max-w-[900px]">
+        {/* =========================
+            SECTION TITLE
+        ========================== */}
 
-        {/* Section Heading */}
-        <div className="mb-4 flex items-center gap-2">
-          <span className="text-[11px] font-bold text-[#009846]">
+        <div className="mb-3 flex items-center gap-2 sm:mb-4">
+          <span className="text-[10px] font-bold text-[#e84c4c] sm:text-[11px]">
             ▼
           </span>
 
-          <h2 className="text-[16px] font-bold text-[#1c2921]">
+          <h2 className="text-[15px] font-bold text-[#1c2921] sm:text-[16px]">
             Today&apos;s Price Decreased
           </h2>
         </div>
 
-        {/* Product Grid */}
-        {decreasedProducts.length > 0 ? (
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {/* =========================
+            PRODUCT GRID
+        ========================== */}
 
+        {decreasedProducts.length > 0 ? (
+          <div
+            className="
+              grid grid-cols-1
+              gap-3
+              sm:grid-cols-2
+              lg:grid-cols-3
+            "
+          >
             {decreasedProducts.map((product) => (
               <Link
                 key={product.id}
                 href={`/product/${product.slug}`}
-                className="rounded-[9px] border border-[#e0e8e2] bg-white px-4 py-3 transition hover:border-[#cad8ce] hover:shadow-sm"
+                className="
+                  group
+                  rounded-[9px]
+                  border border-[#e0e8e2]
+                  bg-white
+                  px-3 py-3
+                  transition-all duration-200
+                  hover:-translate-y-[1px]
+                  hover:border-[#cad8ce]
+                  hover:shadow-sm
+                  sm:px-4
+                "
               >
+                {/* =========================
+                    PRODUCT TOP
+                ========================== */}
 
-                {/* Product Top */}
-                <div className="flex items-start gap-3">
+                <div className="flex min-w-0 items-start gap-3">
+                  {/* PRODUCT EMOJI / IMAGE */}
 
-                  {/* Product Emoji */}
-                  <div className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-[8px] bg-[#f3f7f4] text-[20px]">
-                    {product.image || product.categoryIcon || "🛒"}
+                  <div
+                    className="
+                      flex h-[38px] w-[38px]
+                      shrink-0
+                      items-center justify-center
+                      rounded-[8px]
+                      bg-[#f3f7f4]
+                      text-[20px]
+                    "
+                  >
+                    {product.image ||
+                      product.categoryIcon ||
+                      "🛒"}
                   </div>
 
-                  {/* Product Info */}
-                  <div>
-                    <h3 className="text-[12px] font-semibold leading-[16px] text-[#202820]">
+                  {/* PRODUCT INFO */}
+
+                  <div className="min-w-0">
+                    <h3
+                      className="
+                        break-words
+                        text-[11px]
+                        font-semibold
+                        leading-[16px]
+                        text-[#202820]
+                        transition-colors
+                        group-hover:text-[#009846]
+                        sm:text-[12px]
+                      "
+                    >
                       {getProductName(product)}
                     </h3>
 
-                    <p className="mt-[2px] text-[9px] text-[#7f8982]">
+                    <p className="mt-[2px] text-[8px] text-[#7f8982] sm:text-[9px]">
                       {getEnglishUnit(product.unit)}
                     </p>
                   </div>
-
                 </div>
 
-                {/* Price Area */}
-                <div className="mt-3 flex items-end justify-between">
+                {/* =========================
+                    PRICE AREA
+                ========================== */}
 
-                  <div>
+                <div className="mt-3 flex items-end justify-between gap-3">
+                  {/* PRICE */}
+
+                  <div className="min-w-0">
                     <p className="text-[8px] text-[#858d87]">
                       Today&apos;s Price
                     </p>
 
-                    <p className="mt-[1px] text-[14px] font-bold text-[#17251d]">
+                    <p className="mt-[1px] whitespace-nowrap text-[14px] font-bold text-[#17251d] sm:text-[15px]">
                       ৳{product.today.toLocaleString()}
                     </p>
                   </div>
 
-                  {/* Decreased Badge */}
-                  <span className="rounded-full bg-[#fff0f0] px-[7px] py-[3px] text-[8px] font-semibold text-[#e84c4c]">
-                    ▼ {Math.abs(product.change.pct).toFixed(1)}%
+                  {/* DECREASED BADGE */}
+
+                  <span
+                    className="
+                      shrink-0
+                      rounded-full
+                      bg-[#fff0f0]
+                      px-[7px] py-[3px]
+                      text-[8px]
+                      font-semibold
+                      text-[#e84c4c]
+                    "
+                  >
+                    ▼{" "}
+                    {Math.abs(
+                      product.change.pct
+                    ).toFixed(1)}
+                    %
                   </span>
-
                 </div>
-
               </Link>
             ))}
-
           </div>
         ) : (
-          <div className="rounded-[9px] border border-[#e0e8e2] bg-white p-8 text-center">
-            <p className="text-[12px] text-[#707970]">
+          /* =========================
+              EMPTY STATE
+          ========================== */
+
+          <div className="rounded-[9px] border border-[#e0e8e2] bg-white px-4 py-8 text-center sm:p-8">
+            <p className="text-[11px] text-[#707970] sm:text-[12px]">
               No decreased products found.
             </p>
           </div>
         )}
-
       </div>
     </section>
   );

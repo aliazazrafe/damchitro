@@ -119,40 +119,29 @@ export default function Navbar() {
     session?.user?.email?.split("@")[0] ||
     "User";
 
-  const firstName =
-    userName.split(" ")[0] || "User";
+  const firstName = userName.split(" ")[0] || "User";
 
-  const firstLetter =
-    firstName.charAt(0).toUpperCase();
+  const firstLetter = firstName.charAt(0).toUpperCase();
 
-  const userEmail =
-    session?.user?.email || "";
+  const userEmail = session?.user?.email || "";
 
-  const userImage =
-    session?.user?.image || "";
+  const userImage = session?.user?.image || "";
 
   /* =========================================
-     CLOSE DROPDOWN WHEN CLICKING OUTSIDE
+     CLOSE PROFILE DROPDOWN
   ========================================= */
 
   useEffect(() => {
-    const handleClickOutside = (
-      event: MouseEvent
-    ) => {
+    const handleClickOutside = (event: MouseEvent) => {
       if (
         profileRef.current &&
-        !profileRef.current.contains(
-          event.target as Node
-        )
+        !profileRef.current.contains(event.target as Node)
       ) {
         setProfileOpen(false);
       }
     };
 
-    document.addEventListener(
-      "mousedown",
-      handleClickOutside
-    );
+    document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
       document.removeEventListener(
@@ -175,10 +164,7 @@ export default function Navbar() {
       router.push("/");
       router.refresh();
     } catch (error) {
-      console.error(
-        "Sign out failed:",
-        error
-      );
+      console.error("Sign out failed:", error);
     }
   };
 
@@ -188,16 +174,18 @@ export default function Navbar() {
           TOP NAVBAR
       ====================================== */}
 
-      <div className="mx-auto flex h-[64px] w-full max-w-[900px] items-center justify-between px-4">
-        {/* LEFT SIDE */}
+      <div className="mx-auto flex h-[58px] w-full max-w-[900px] items-center justify-between gap-2 px-3 sm:h-[64px] sm:px-4">
+        {/* =====================================
+            LEFT SIDE
+        ====================================== */}
 
         <Link
           href="/"
-          className="flex items-center gap-3"
+          className="flex min-w-0 items-center gap-2 sm:gap-3"
         >
           {/* LOGO */}
 
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#009846]">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#009846] sm:h-10 sm:w-10">
             <svg
               width="20"
               height="20"
@@ -232,12 +220,12 @@ export default function Navbar() {
 
           {/* BRAND + DATE */}
 
-          <div>
-            <h1 className="text-[16px] font-bold leading-[19px] text-[#181818]">
+          <div className="min-w-0">
+            <h1 className="whitespace-nowrap text-[14px] font-bold leading-[18px] text-[#181818] sm:text-[16px] sm:leading-[19px]">
               Bazar Dor
             </h1>
 
-            <p className="mt-[2px] text-[10px] leading-[12px] text-[#666666]">
+            <p className="mt-[2px] hidden whitespace-nowrap text-[10px] leading-[12px] text-[#666666] sm:block">
               Wednesday, 7 October 2026
             </p>
           </div>
@@ -247,14 +235,14 @@ export default function Navbar() {
             RIGHT SIDE
         ====================================== */}
 
-        <div className="flex items-center">
+        <div className="flex shrink-0 items-center">
           {/* SESSION LOADING */}
 
           {isPending ? (
             <div className="flex items-center gap-2">
-              <div className="h-[32px] w-[32px] animate-pulse rounded-full bg-[#eeeeee]" />
+              <div className="h-[30px] w-[30px] animate-pulse rounded-full bg-[#eeeeee] sm:h-[32px] sm:w-[32px]" />
 
-              <div className="h-[12px] w-[55px] animate-pulse rounded bg-[#eeeeee]" />
+              <div className="hidden h-[12px] w-[55px] animate-pulse rounded bg-[#eeeeee] sm:block" />
             </div>
           ) : session?.user ? (
             /* =================================
@@ -265,9 +253,7 @@ export default function Navbar() {
               ref={profileRef}
               className="relative"
             >
-              {/* =============================
-                  PROFILE BUTTON
-              ============================== */}
+              {/* PROFILE BUTTON */}
 
               <button
                 type="button"
@@ -276,35 +262,27 @@ export default function Navbar() {
                     (previous) => !previous
                   )
                 }
-                className="flex items-center gap-2 rounded-[7px] px-2 py-[6px] transition-colors hover:bg-[#f6f8f6]"
+                className="flex items-center gap-1.5 rounded-[7px] px-1.5 py-[5px] transition-colors hover:bg-[#f6f8f6] sm:gap-2 sm:px-2 sm:py-[6px]"
                 aria-expanded={profileOpen}
                 aria-label="Open profile menu"
               >
-                {/* =============================
-                    USER AVATAR
-
-                    Google / GitHub image থাকলে
-                    real image দেখাবে।
-
-                    Image না থাকলে
-                    নামের first letter দেখাবে।
-                ============================== */}
+                {/* USER AVATAR */}
 
                 {userImage ? (
                   <img
                     src={userImage}
                     alt={`${userName} profile`}
-                    className="h-[32px] w-[32px] shrink-0 rounded-full border border-[#e5e5e5] object-cover"
+                    className="h-[30px] w-[30px] shrink-0 rounded-full border border-[#e5e5e5] object-cover sm:h-[32px] sm:w-[32px]"
                   />
                 ) : (
-                  <div className="flex h-[32px] w-[32px] shrink-0 items-center justify-center rounded-full bg-[#e7f5eb] text-[12px] font-bold text-[#009846]">
+                  <div className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full bg-[#e7f5eb] text-[11px] font-bold text-[#009846] sm:h-[32px] sm:w-[32px] sm:text-[12px]">
                     {firstLetter}
                   </div>
                 )}
 
                 {/* FIRST NAME */}
 
-                <span className="max-w-[100px] truncate text-[12px] font-medium text-[#333333]">
+                <span className="hidden max-w-[100px] truncate text-[12px] font-medium text-[#333333] sm:block">
                   {firstName}
                 </span>
 
@@ -321,6 +299,7 @@ export default function Navbar() {
                       ? "rotate-180"
                       : ""
                   }`}
+                  aria-hidden="true"
                 >
                   <path
                     d="M3 4.5L6 7.5L9 4.5"
@@ -337,14 +316,10 @@ export default function Navbar() {
               ================================== */}
 
               {profileOpen && (
-                <div className="absolute right-0 top-[48px] z-[100] w-[210px] overflow-hidden rounded-[12px] border border-[#e5e5e5] bg-white shadow-[0_6px_20px_rgba(0,0,0,0.15)]">
-                  {/* =============================
-                      USER DETAILS
-                  ============================== */}
+                <div className="absolute right-0 top-[44px] z-[100] w-[210px] max-w-[calc(100vw-24px)] overflow-hidden rounded-[12px] border border-[#e5e5e5] bg-white shadow-[0_6px_20px_rgba(0,0,0,0.15)] sm:top-[48px]">
+                  {/* USER DETAILS */}
 
                   <div className="border-b border-[#eeeeee] px-4 py-4">
-                    {/* DROPDOWN USER INFO */}
-
                     <div className="flex items-center gap-3">
                       {/* SMALL AVATAR */}
 
@@ -374,9 +349,7 @@ export default function Navbar() {
                     </div>
                   </div>
 
-                  {/* =============================
-                      MY PROFILE
-                  ============================== */}
+                  {/* MY PROFILE */}
 
                   <Link
                     href="/profile"
@@ -409,14 +382,10 @@ export default function Navbar() {
                       />
                     </svg>
 
-                    <span>
-                      My Profile
-                    </span>
+                    <span>My Profile</span>
                   </Link>
 
-                  {/* =============================
-                      SIGN OUT
-                  ============================== */}
+                  {/* SIGN OUT */}
 
                   <button
                     type="button"
@@ -454,9 +423,7 @@ export default function Navbar() {
                       />
                     </svg>
 
-                    <span>
-                      Sign Out
-                    </span>
+                    <span>Sign Out</span>
                   </button>
                 </div>
               )}
@@ -466,17 +433,17 @@ export default function Navbar() {
                LOGGED OUT USER
             ================================== */
 
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2 sm:gap-6">
               <Link
                 href="/signin"
-                className="text-[12px] font-medium text-[#222222] transition-colors hover:text-[#009846]"
+                className="whitespace-nowrap text-[11px] font-medium text-[#222222] transition-colors hover:text-[#009846] sm:text-[12px]"
               >
                 Sign In
               </Link>
 
               <Link
                 href="/signup"
-                className="rounded-[5px] bg-[#009846] px-4 py-[9px] text-[12px] font-medium text-white transition-colors hover:bg-[#00843d]"
+                className="whitespace-nowrap rounded-[5px] bg-[#009846] px-2.5 py-[7px] text-[11px] font-medium text-white transition-colors hover:bg-[#00843d] sm:px-4 sm:py-[9px] sm:text-[12px]"
               >
                 Sign Up
               </Link>
@@ -490,25 +457,24 @@ export default function Navbar() {
       ====================================== */}
 
       <div className="border-y border-[#eeeeee] bg-white">
-        <nav className="mx-auto flex w-full max-w-[900px] items-center overflow-x-auto px-4">
-          <div className="flex min-w-max items-center gap-7 py-[10px]">
-            {categories.map(
-              (category) => (
-                <Link
-                  key={category.name}
-                  href={category.href}
-                  className="flex items-center gap-[5px] whitespace-nowrap text-[12px] font-medium text-[#333333] transition-colors hover:text-[#009846]"
-                >
-                  <span className="text-[13px]">
-                    {category.icon}
-                  </span>
+        <nav
+          className="mx-auto w-full max-w-[900px] overflow-x-auto px-3 sm:px-4"
+          aria-label="Product categories"
+        >
+          <div className="flex min-w-max items-center gap-5 py-[9px] sm:gap-7 sm:py-[10px]">
+            {categories.map((category) => (
+              <Link
+                key={category.name}
+                href={category.href}
+                className="flex shrink-0 items-center gap-[5px] whitespace-nowrap text-[11px] font-medium text-[#333333] transition-colors hover:text-[#009846] sm:text-[12px]"
+              >
+                <span className="text-[12px] sm:text-[13px]">
+                  {category.icon}
+                </span>
 
-                  <span>
-                    {category.name}
-                  </span>
-                </Link>
-              )
-            )}
+                <span>{category.name}</span>
+              </Link>
+            ))}
           </div>
         </nav>
       </div>
@@ -519,18 +485,16 @@ export default function Navbar() {
 
       <div className="w-full overflow-hidden border-b border-[#e7e7e7] bg-[#f8fbf9]">
         <div className="marquee-animation">
-          {/* =============================
-              FIRST COPY
-          ============================== */}
+          {/* FIRST COPY */}
 
           <div className="flex shrink-0 items-center">
             {tickerItems.map(
               (item, index) => (
                 <div
                   key={`ticker-first-${index}`}
-                  className="flex shrink-0 items-center gap-2 whitespace-nowrap border-r border-[#e5e5e5] px-6 py-[8px] text-[11px]"
+                  className="flex shrink-0 items-center gap-1.5 whitespace-nowrap border-r border-[#e5e5e5] px-4 py-[7px] text-[10px] sm:gap-2 sm:px-6 sm:py-[8px] sm:text-[11px]"
                 >
-                  <span className="text-[13px]">
+                  <span className="text-[12px] sm:text-[13px]">
                     {item.icon}
                   </span>
 
@@ -552,9 +516,7 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* =============================
-              SECOND COPY
-          ============================== */}
+          {/* SECOND COPY */}
 
           <div
             className="flex shrink-0 items-center"
@@ -564,9 +526,9 @@ export default function Navbar() {
               (item, index) => (
                 <div
                   key={`ticker-second-${index}`}
-                  className="flex shrink-0 items-center gap-2 whitespace-nowrap border-r border-[#e5e5e5] px-6 py-[8px] text-[11px]"
+                  className="flex shrink-0 items-center gap-1.5 whitespace-nowrap border-r border-[#e5e5e5] px-4 py-[7px] text-[10px] sm:gap-2 sm:px-6 sm:py-[8px] sm:text-[11px]"
                 >
-                  <span className="text-[13px]">
+                  <span className="text-[12px] sm:text-[13px]">
                     {item.icon}
                   </span>
 

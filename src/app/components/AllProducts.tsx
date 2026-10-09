@@ -85,15 +85,22 @@ function getEnglishUnit(unit: string) {
 }
 
 function getProductName(product: Product) {
-  if (product.nameEn) return product.nameEn;
+  if (product.nameEn) {
+    return product.nameEn;
+  }
 
-  if (product.productNameEn) return product.productNameEn;
+  if (product.productNameEn) {
+    return product.productNameEn;
+  }
 
-  if (product.name) return product.name;
+  if (product.name) {
+    return product.name;
+  }
 
-  if (product.productName) return product.productName;
+  if (product.productName) {
+    return product.productName;
+  }
 
-  // English fallback from slug
   if (product.slug) {
     return product.slug
       .split("-")
@@ -112,20 +119,23 @@ function getChangeStyle(change: Change) {
   if (change?.dir === "up") {
     return {
       symbol: "▲",
-      className: "bg-[#e9f7ee] text-[#009846]",
+      className:
+        "bg-[#e9f7ee] text-[#009846]",
     };
   }
 
   if (change?.dir === "down") {
     return {
       symbol: "▼",
-      className: "bg-[#fff0f0] text-[#e84c4c]",
+      className:
+        "bg-[#fff0f0] text-[#e84c4c]",
     };
   }
 
   return {
     symbol: "—",
-    className: "bg-[#f1f2f1] text-[#777777]",
+    className:
+      "bg-[#f1f2f1] text-[#777777]",
   };
 }
 
@@ -135,89 +145,158 @@ export default async function AllProducts() {
   return (
     <section
       id="all-products"
-      className="bg-[#f1f8f3] px-4 py-8"
+      className="bg-[#f1f8f3] px-3 py-6 sm:px-4 sm:py-8"
     >
       <div className="mx-auto w-full max-w-[900px]">
+        {/* =========================
+            HEADING
+        ========================== */}
 
-        {/* Heading */}
-        <div className="mb-5">
-          <h2 className="text-[18px] font-bold text-[#17251d]">
+        <div className="mb-4 sm:mb-5">
+          <h2 className="text-[17px] font-bold text-[#17251d] sm:text-[18px]">
             All Products
           </h2>
 
-          <p className="mt-1 text-[10px] leading-[16px] text-[#7c857f]">
+          <p className="mt-1 max-w-[520px] text-[9px] leading-[15px] text-[#7c857f] sm:text-[10px] sm:leading-[16px]">
             Check today&apos;s latest market prices for all daily essentials.
           </p>
         </div>
 
-        {/* Product Grid */}
+        {/* =========================
+            PRODUCT GRID
+        ========================== */}
+
         {products.length > 0 ? (
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div
+            className="
+              grid grid-cols-1
+              gap-3
+              sm:grid-cols-2
+              lg:grid-cols-3
+            "
+          >
             {products.map((product) => {
-              const changeStyle = getChangeStyle(product.change);
+              const changeStyle =
+                getChangeStyle(product.change);
 
               return (
                 <Link
                   key={product.id}
                   href={`/product/${product.slug}`}
-                  className="group rounded-[9px] border border-[#e0e8e2] bg-white px-4 py-3 transition duration-200 hover:-translate-y-[1px] hover:border-[#cad8ce] hover:shadow-sm"
+                  className="
+                    group
+                    min-w-0
+                    rounded-[9px]
+                    border border-[#e0e8e2]
+                    bg-white
+                    px-3 py-3
+                    transition-all duration-200
+                    hover:-translate-y-[1px]
+                    hover:border-[#cad8ce]
+                    hover:shadow-sm
+                    sm:px-4
+                  "
                 >
-                  {/* Product Top */}
-                  <div className="flex items-start gap-3">
+                  {/* =========================
+                      PRODUCT TOP
+                  ========================== */}
 
-                    {/* Emoji */}
-                    <div className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-[8px] bg-[#f3f7f4] text-[20px]">
+                  <div className="flex min-w-0 items-start gap-3">
+                    {/* EMOJI / IMAGE */}
+
+                    <div
+                      className="
+                        flex h-[38px] w-[38px]
+                        shrink-0
+                        items-center justify-center
+                        rounded-[8px]
+                        bg-[#f3f7f4]
+                        text-[20px]
+                      "
+                    >
                       {product.image ||
                         product.categoryIcon ||
                         "🛒"}
                     </div>
 
-                    {/* Name */}
-                    <div>
-                      <h3 className="text-[12px] font-semibold leading-[16px] text-[#202820] transition-colors group-hover:text-[#009846]">
+                    {/* NAME */}
+
+                    <div className="min-w-0">
+                      <h3
+                        className="
+                          break-words
+                          text-[11px]
+                          font-semibold
+                          leading-[16px]
+                          text-[#202820]
+                          transition-colors
+                          group-hover:text-[#009846]
+                          sm:text-[12px]
+                        "
+                      >
                         {getProductName(product)}
                       </h3>
 
-                      <p className="mt-[2px] text-[9px] text-[#7f8982]">
-                        {getEnglishUnit(product.unit)}
+                      <p className="mt-[2px] text-[8px] text-[#7f8982] sm:text-[9px]">
+                        {getEnglishUnit(
+                          product.unit
+                        )}
                       </p>
                     </div>
                   </div>
 
-                  {/* Price */}
-                  <div className="mt-3 flex items-end justify-between">
+                  {/* =========================
+                      PRICE AREA
+                  ========================== */}
 
-                    <div>
+                  <div className="mt-3 flex items-end justify-between gap-3">
+                    {/* PRICE */}
+
+                    <div className="min-w-0">
                       <p className="text-[8px] text-[#858d87]">
                         Today&apos;s Price
                       </p>
 
-                      <p className="mt-[1px] text-[14px] font-bold text-[#17251d]">
-                        ৳{product.today.toLocaleString()}
+                      <p className="mt-[1px] whitespace-nowrap text-[14px] font-bold text-[#17251d] sm:text-[15px]">
+                        ৳
+                        {product.today.toLocaleString()}
                       </p>
                     </div>
 
-                    {/* Change Badge */}
+                    {/* CHANGE BADGE */}
+
                     <span
-                      className={`rounded-full px-[7px] py-[3px] text-[8px] font-semibold ${changeStyle.className}`}
+                      className={`
+                        shrink-0
+                        rounded-full
+                        px-[7px] py-[3px]
+                        text-[8px]
+                        font-semibold
+                        ${changeStyle.className}
+                      `}
                     >
                       {changeStyle.symbol}{" "}
-                      {Math.abs(product.change?.pct ?? 0).toFixed(1)}%
+                      {Math.abs(
+                        product.change?.pct ?? 0
+                      ).toFixed(1)}
+                      %
                     </span>
-
                   </div>
                 </Link>
               );
             })}
           </div>
         ) : (
-          <div className="rounded-[9px] border border-[#e0e8e2] bg-white p-8 text-center">
-            <p className="text-[12px] text-[#707970]">
+          /* =========================
+              EMPTY STATE
+          ========================== */
+
+          <div className="rounded-[9px] border border-[#e0e8e2] bg-white px-4 py-8 text-center sm:p-8">
+            <p className="text-[11px] text-[#707970] sm:text-[12px]">
               No products found.
             </p>
           </div>
         )}
-
       </div>
     </section>
   );
