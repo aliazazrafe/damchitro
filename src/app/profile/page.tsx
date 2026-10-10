@@ -2,13 +2,8 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "../../lib/auth";
-import ConnectGitHub from "./ConnectGitHub";
 
-export default async function ProfilePage({
-  searchParams,
-}: {
-  searchParams: Promise<{ github?: string }>;
-}) {
+export default async function ProfilePage() {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -20,8 +15,6 @@ export default async function ProfilePage({
       )}&reason=protected`
     );
   }
-
-  const params = await searchParams;
 
   const userName =
     session.user.name?.trim() ||
@@ -86,9 +79,41 @@ export default async function ProfilePage({
             {/* PROFILE INFORMATION */}
 
             <div className="mt-6 sm:mt-7">
-              <h2 className="text-[13px] font-bold text-[#273029] sm:text-[14px]">
-                Profile Information
-              </h2>
+              <div className="flex flex-col gap-3 min-[400px]:flex-row min-[400px]:items-center min-[400px]:justify-between">
+                <h2 className="text-[13px] font-bold text-[#273029] sm:text-[14px]">
+                  Profile Information
+                </h2>
+
+                <Link
+                  href="/profile/update"
+                  className="inline-flex w-fit items-center justify-center gap-2 rounded-[6px] border border-[#009846] px-3 py-[7px] text-[9px] font-semibold text-[#009846] transition-colors hover:bg-[#edf8f0] sm:text-[10px]"
+                >
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12 20H21"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                    />
+
+                    <path
+                      d="M16.5 3.5C17.3284 2.67157 18.6716 2.67157 19.5 3.5C20.3284 4.32843 20.3284 5.67157 19.5 6.5L8 18L4 19L5 15L16.5 3.5Z"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+
+                  Update Profile
+                </Link>
+              </div>
 
               <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {/* FULL NAME */}
@@ -201,23 +226,19 @@ export default async function ProfilePage({
               </div>
             </div>
 
-            {/* GITHUB CONNECTION */}
+            {/* BUTTONS */}
 
-            {params.github === "connected" && (
-              <div className="mt-5 rounded-[8px] border border-[#b9e6c6] bg-[#ecf9ef] px-4 py-3 text-[11px] text-[#08763a]">
-                Returned from GitHub. Check the linked account status
-                to confirm the connection.
-              </div>
-            )}
+            <div className="mt-5 flex flex-col gap-2 min-[400px]:flex-row sm:mt-6">
+              <Link
+                href="/profile/update"
+                className="inline-flex w-full items-center justify-center rounded-[6px] bg-[#009846] px-5 py-[10px] text-[10px] font-semibold text-white transition-colors hover:bg-[#00843d] min-[400px]:w-auto sm:text-[11px]"
+              >
+                Update Profile
+              </Link>
 
-            <ConnectGitHub />
-
-            {/* BUTTON */}
-
-            <div className="mt-5 sm:mt-6">
               <Link
                 href="/"
-                className="inline-flex w-full items-center justify-center rounded-[6px] bg-[#009846] px-5 py-[10px] text-[10px] font-semibold text-white transition-colors hover:bg-[#00843d] min-[400px]:w-auto sm:text-[11px]"
+                className="inline-flex w-full items-center justify-center rounded-[6px] border border-[#dce4de] bg-white px-5 py-[10px] text-[10px] font-semibold text-[#4f5851] transition-colors hover:bg-[#f6f8f6] min-[400px]:w-auto sm:text-[11px]"
               >
                 Browse Products
               </Link>

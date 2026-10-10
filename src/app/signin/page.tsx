@@ -18,50 +18,69 @@ export default function SignInPage() {
     "google" | "github" | null
   >(null);
 
-  const callbackURL = searchParams.get("callbackURL") || "/";
+  const callbackURL =
+    searchParams.get("callbackURL") || "/";
 
   useEffect(() => {
     const reason = searchParams.get("reason");
     const error = searchParams.get("error");
 
     if (reason === "protected") {
-      toast.error("Please sign in to view this page.");
+      toast.error(
+        "Please sign in to view this page.",
+        {
+          id: "protected-route",
+        }
+      );
     }
 
     if (error) {
-      toast.error("Authentication failed. Please try again.");
+      toast.error(
+        "Authentication failed. Please try again.",
+        {
+          id: "authentication-error",
+        }
+      );
     }
   }, [searchParams]);
 
   const handleSignIn = async () => {
     if (!email.trim() || !password) {
-      toast.error("Please enter your email and password.");
+      toast.error(
+        "Please enter your email and password."
+      );
       return;
     }
 
     setLoading(true);
 
     try {
-      const { error } = await authClient.signIn.email({
-        email: email.trim(),
-        password,
-      });
+      const { error } =
+        await authClient.signIn.email({
+          email: email.trim(),
+          password,
+        });
 
       if (error) {
         toast.error(
-          error.message || "Invalid email or password."
+          error.message ||
+            "Invalid email or password."
         );
         return;
       }
 
-      toast.success("Signed in successfully!");
+      toast.success(
+        "Signed in successfully!"
+      );
 
       setTimeout(() => {
         router.push(callbackURL);
         router.refresh();
       }, 700);
     } catch {
-      toast.error("Something went wrong. Please try again.");
+      toast.error(
+        "Something went wrong. Please try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -73,11 +92,28 @@ export default function SignInPage() {
     setSocialLoading(provider);
 
     try {
-      const { error } = await authClient.signIn.social({
-        provider,
-        callbackURL,
-        errorCallbackURL: "/signin?error=social_auth_failed",
-      });
+      /*
+        For normal social login:
+        /?login=success
+
+        If the user was redirected from a protected page:
+        /?login=success&callbackURL=/product/...
+      */
+
+      const socialCallbackURL =
+        callbackURL === "/"
+          ? "/?login=success"
+          : `/?login=success&callbackURL=${encodeURIComponent(
+              callbackURL
+            )}`;
+
+      const { error } =
+        await authClient.signIn.social({
+          provider,
+          callbackURL: socialCallbackURL,
+          errorCallbackURL:
+            "/signin?error=social_auth_failed",
+        });
 
       if (error) {
         toast.error(
@@ -96,7 +132,8 @@ export default function SignInPage() {
     }
   };
 
-  const disabled = loading || socialLoading !== null;
+  const disabled =
+    loading || socialLoading !== null;
 
   return (
     <main className="min-h-screen bg-green-50 px-3 py-6 sm:px-4 sm:py-10">
@@ -114,7 +151,8 @@ export default function SignInPage() {
             </h1>
 
             <p className="mx-auto mt-1 max-w-[280px] text-[11px] leading-4 text-gray-500 sm:text-xs">
-              Sign in to your Bazar Dor account to continue.
+              Sign in to your Bazar Dor account
+              to continue.
             </p>
           </div>
 
@@ -141,7 +179,9 @@ export default function SignInPage() {
                 id="email"
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) =>
+                  setEmail(e.target.value)
+                }
                 placeholder="you@example.com"
                 autoComplete="email"
                 required
@@ -164,7 +204,9 @@ export default function SignInPage() {
                 id="password"
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) =>
+                  setPassword(e.target.value)
+                }
                 placeholder="Enter your password"
                 autoComplete="current-password"
                 required
@@ -180,7 +222,9 @@ export default function SignInPage() {
               disabled={disabled}
               className="mt-5 flex h-10 w-full items-center justify-center rounded-md bg-green-600 px-3 text-[11px] font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60 sm:mt-6 sm:text-xs"
             >
-              {loading ? "Signing In..." : "Sign In"}
+              {loading
+                ? "Signing In..."
+                : "Sign In"}
             </button>
           </form>
 
@@ -205,7 +249,9 @@ export default function SignInPage() {
               type="button"
               disabled={disabled}
               onClick={() =>
-                void handleSocialSignIn("google")
+                void handleSocialSignIn(
+                  "google"
+                )
               }
               className="flex h-10 min-w-0 items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-2 text-[11px] font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60 sm:text-xs"
             >
@@ -248,7 +294,9 @@ export default function SignInPage() {
               type="button"
               disabled={disabled}
               onClick={() =>
-                void handleSocialSignIn("github")
+                void handleSocialSignIn(
+                  "github"
+                )
               }
               className="flex h-10 min-w-0 items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-2 text-[11px] font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60 sm:text-xs"
             >

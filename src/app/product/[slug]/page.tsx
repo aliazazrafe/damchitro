@@ -293,6 +293,16 @@ export default async function ProductDetailsPage({
   const { slug } = await params;
 
   /* ==============================
+     GET PRODUCT FIRST
+  ================================ */
+
+  const product = await getProductBySlug(slug);
+
+  if (!product) {
+    notFound();
+  }
+
+  /* ==============================
      AUTHENTICATION CHECK
   ================================ */
 
@@ -306,16 +316,6 @@ export default async function ProductDetailsPage({
         `/product/${slug}`
       )}&reason=protected`
     );
-  }
-
-  /* ==============================
-     GET PRODUCT
-  ================================ */
-
-  const product = await getProductBySlug(slug);
-
-  if (!product) {
-    notFound();
   }
 
   const todayPrice =
@@ -405,19 +405,18 @@ export default async function ProductDetailsPage({
           className: "text-[#009846]",
         }
       : direction === "down"
-        ? {
-            symbol: "▼",
-            className: "text-[#e84c4c]",
-          }
-        : {
-            symbol: "—",
-            className: "text-[#777777]",
-          };
+      ? {
+          symbol: "▼",
+          className: "text-[#e84c4c]",
+        }
+      : {
+          symbol: "—",
+          className: "text-[#777777]",
+        };
 
   return (
     <main className="min-h-screen bg-[#f1f6f2]">
       <div className="mx-auto w-full max-w-[900px] px-4 py-7">
-
         {/* Back */}
 
         <Link
@@ -433,11 +432,9 @@ export default async function ProductDetailsPage({
 
         <section className="rounded-[10px] border border-[#e1e8e3] bg-white px-5 py-4">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-
             {/* Left */}
 
             <div className="flex items-center gap-4">
-
               <div className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-[10px] bg-[#f1f5f2] text-[28px]">
                 {product.image ||
                   product.categoryIcon ||
@@ -464,13 +461,11 @@ export default async function ProductDetailsPage({
                     `Today's average market price is ৳${todayPrice.toLocaleString()}.`}
                 </p>
               </div>
-
             </div>
 
             {/* Today's Price */}
 
             <div className="rounded-[9px] bg-[#f5f8f5] px-5 py-3 sm:text-right">
-
               <p className="text-[8px] text-[#858d87]">
                 Today&apos;s Price
               </p>
@@ -485,9 +480,7 @@ export default async function ProductDetailsPage({
                 {changeStyle.symbol}{" "}
                 {Math.abs(percentage).toFixed(1)}%
               </p>
-
             </div>
-
           </div>
         </section>
 
@@ -496,7 +489,6 @@ export default async function ProductDetailsPage({
         ================================ */}
 
         <section className="mt-4 rounded-[10px] border border-[#e1e8e3] bg-white p-4">
-
           {/* PRICE SUMMARY */}
 
           <h2 className="text-[13px] font-bold text-[#273029]">
@@ -504,11 +496,9 @@ export default async function ProductDetailsPage({
           </h2>
 
           <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
-
             {/* Minimum */}
 
             <div className="rounded-[9px] border border-[#e2e8e3] px-4 py-3">
-
               <p className="text-[8px] text-[#737c76]">
                 Minimum Price
               </p>
@@ -520,13 +510,11 @@ export default async function ProductDetailsPage({
               <p className="mt-1 text-[8px] text-[#8a918c]">
                 Lowest price in markets
               </p>
-
             </div>
 
             {/* Maximum */}
 
             <div className="rounded-[9px] border border-[#e2e8e3] px-4 py-3">
-
               <p className="text-[8px] text-[#737c76]">
                 Maximum Price
               </p>
@@ -538,13 +526,11 @@ export default async function ProductDetailsPage({
               <p className="mt-1 text-[8px] text-[#8a918c]">
                 Highest price in markets
               </p>
-
             </div>
 
             {/* Average */}
 
             <div className="rounded-[9px] border border-[#e2e8e3] px-4 py-3">
-
               <p className="text-[8px] text-[#737c76]">
                 Average Price
               </p>
@@ -556,9 +542,7 @@ export default async function ProductDetailsPage({
               <p className="mt-1 text-[8px] text-[#8a918c]">
                 Average across all markets
               </p>
-
             </div>
-
           </div>
 
           {/* ==============================
@@ -571,13 +555,9 @@ export default async function ProductDetailsPage({
 
           {marketRows.length > 0 ? (
             <div className="overflow-x-auto rounded-[8px] border border-[#dfe6e1]">
-
               <table className="w-full min-w-[650px] border-collapse">
-
                 <thead className="bg-[#fafcfa]">
-
                   <tr className="border-b border-[#dfe6e1]">
-
                     <th className="px-3 py-[9px] text-left text-[8px] font-medium text-[#6d766f]">
                       Market
                     </th>
@@ -597,20 +577,16 @@ export default async function ProductDetailsPage({
                     <th className="px-3 py-[9px] text-right text-[8px] font-medium text-[#6d766f]">
                       Average
                     </th>
-
                   </tr>
-
                 </thead>
 
                 <tbody>
-
                   {marketRows.map(
                     (market, index) => (
                       <tr
                         key={index}
                         className="border-b border-[#dfe6e1] last:border-b-0"
                       >
-
                         <td className="px-3 py-[9px] text-[8px] font-medium text-[#323a34]">
                           {market.name}
                         </td>
@@ -630,28 +606,20 @@ export default async function ProductDetailsPage({
                         <td className="px-3 py-[9px] text-right text-[8px] font-semibold text-[#202820]">
                           ৳{market.average.toLocaleString()}
                         </td>
-
                       </tr>
                     )
                   )}
-
                 </tbody>
-
               </table>
-
             </div>
           ) : (
             <div className="rounded-[8px] border border-[#dfe6e1] px-4 py-7 text-center">
-
               <p className="text-[9px] text-[#737c76]">
                 Market information is currently unavailable.
               </p>
-
             </div>
           )}
-
         </section>
-
       </div>
     </main>
   );

@@ -1,36 +1,166 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Bazar Dor
 
-## Getting Started
+Bazar Dor is a responsive daily essential product price tracking web application. It allows users to explore current market prices, compare price changes, browse products by category, and view detailed market-wise price information.
 
-First, run the development server:
+The application also includes authentication using Better Auth with Email/Password, Google, and GitHub.
+
+---
+
+1. Technologies Used
+
+- Next.js
+- TypeScript
+- Tailwind CSS
+- Better Auth
+- PostgreSQL
+- React Hot Toast
+- Programming Hero Bazar Dor API
+
+---
+
+2. Key Features
+
+1. Daily Product Price Tracking
+   - View the latest prices of essential products.
+   - See products with increased and decreased prices.
+
+2. Category Based Products
+   - Browse products by categories such as Rice, Lentils, Oil, Vegetables, Fish, Meat, Egg & Milk, and Spices.
+
+3. Product Sorting
+   - Default
+   - Price Low to High
+   - Price High to Low
+
+4. Product Details
+   - View detailed product information.
+   - Check minimum, maximum, and average prices.
+   - Compare prices from different markets.
+
+5. Authentication System
+   - Email and Password Sign Up
+   - Email and Password Sign In
+   - Google Authentication
+   - GitHub Authentication
+   - Sign Out functionality
+
+6. Protected Routes
+   - Product details and user-specific pages are protected.
+   - Unauthenticated users are redirected to the Sign In page.
+
+7. User Profile
+   - View account information.
+   - Update the user's name from the Update Profile page.
+
+8. Toast Notifications
+   - Success and error notifications for Sign In, Sign Up, Social Login, Sign Out, validation errors, and profile updates.
+
+9. Loading Skeletons
+   - Skeleton loading states are displayed while product data is being fetched.
+
+10. Custom 404 Page
+    - Invalid routes and unavailable products or categories display a friendly 404 page.
+
+11. Responsive Design
+    - Responsive layout for mobile, tablet, laptop, and desktop devices.
+
+---
+
+3. Main Routes
+
+- `/` - Home
+- `/category/[slug]` - Category Products
+- `/product/[slug]` - Product Details
+- `/signin` - Sign In
+- `/signup` - Sign Up
+- `/profile` - User Profile
+- `/profile/update` - Update Profile
+
+---
+
+4. Authentication
+
+Authentication is implemented using Better Auth.
+
+Supported authentication methods:
+
+- Email and Password
+- Google
+- GitHub
+
+---
+
+5. API
+
+Product and market price data are fetched from the Programming Hero Bazar Dor API.
+
+---
+
+6. Run Locally
+
+Clone the project:
+
+```bash
+git clone https://github.com/aliazazrafe/damchitro.git
+```
+
+Go to the project directory:
+
+```bash
+cd damchitro
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Create a `.env.local` file and configure the required environment variables for:
+
+- Database connection
+- Better Auth
+- Google OAuth
+- GitHub OAuth
+
+Do not commit the `.env.local` file to GitHub.
+
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open the application in your browser:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+7. Production Build
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+8. Live Website
 
-## Deploy on Vercel
+Live Site: Will be added after Vercel deployment.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+9. GitHub Repository
+
+https://github.com/aliazazrafe/damchitro
+
+---
+
+10. Author
+
+Ali Azaz Rafe
+
+Aspiring Full Stack Web Developer

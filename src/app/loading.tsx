@@ -1,86 +1,84 @@
 export default function Loading() {
   return (
-    <main className="min-h-screen bg-[#f1f8f3] px-4 py-6">
-      <div className="mx-auto w-full max-w-[900px] animate-pulse">
-        {/* Hero Skeleton */}
-        <div className="rounded-xl border border-gray-200 bg-white p-6">
-          <div className="grid items-center gap-8 md:grid-cols-2">
-            <div>
-              <div className="h-5 w-32 rounded-full bg-gray-200" />
+    <main className="min-h-screen bg-[#f1f6f2]">
+      <div className="mx-auto w-full max-w-[900px] px-3 py-5 sm:px-4 sm:py-7">
+        <div className="animate-pulse">
+          {/* Hero Skeleton */}
+          <section className="rounded-[12px] border border-[#e1e8e3] bg-white px-4 py-7 sm:px-6 sm:py-9">
+            <div className="mx-auto flex max-w-[620px] flex-col items-center">
+              <div className="h-[10px] w-[110px] rounded-full bg-[#e5ebe6]" />
 
-              <div className="mt-4 h-7 w-64 rounded bg-gray-200" />
-              <div className="mt-2 h-7 w-48 rounded bg-gray-200" />
+              <div className="mt-4 h-[24px] w-[85%] max-w-[420px] rounded-[6px] bg-[#e1e8e3]" />
 
-              <div className="mt-4 h-3 w-full max-w-md rounded bg-gray-200" />
-              <div className="mt-2 h-3 w-3/4 rounded bg-gray-200" />
+              <div className="mt-3 h-[9px] w-[70%] max-w-[340px] rounded-full bg-[#e8ede9]" />
 
-              <div className="mt-5 h-9 w-32 rounded-md bg-gray-200" />
+              <div className="mt-2 h-[9px] w-[55%] max-w-[260px] rounded-full bg-[#e8ede9]" />
             </div>
+          </section>
 
-            <div className="flex justify-center md:justify-end">
-              <div className="h-32 w-48 rounded-xl bg-gray-200" />
-            </div>
-          </div>
-        </div>
+          {/* Price Increased Skeleton */}
+          <section className="mt-7">
+            <div className="h-[15px] w-[150px] rounded-[4px] bg-[#dce5de]" />
 
-        {/* Section Title */}
-        <div className="mt-8">
-          <div className="h-6 w-40 rounded bg-gray-200" />
-          <div className="mt-2 h-3 w-56 rounded bg-gray-200" />
-        </div>
+            <div className="mt-2 h-[8px] w-[220px] rounded-full bg-[#e3e9e4]" />
 
-        {/* Product Cards */}
-        <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, index) => (
-            <div
-              key={index}
-              className="rounded-xl border border-gray-200 bg-white p-4"
-            >
-              <div className="flex items-start gap-3">
-                <div className="size-12 shrink-0 rounded-lg bg-gray-200" />
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="rounded-[10px] border border-[#e1e8e3] bg-white p-3"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="h-[42px] w-[42px] rounded-[8px] bg-[#e8eee9]" />
 
-                <div className="flex-1">
-                  <div className="h-4 w-24 rounded bg-gray-200" />
-                  <div className="mt-2 h-3 w-16 rounded bg-gray-200" />
+                    <div className="h-[18px] w-[50px] rounded-full bg-[#e8eee9]" />
+                  </div>
+
+                  <div className="mt-4 h-[11px] w-[60%] rounded-[4px] bg-[#dfe6e1]" />
+
+                  <div className="mt-2 h-[7px] w-[35%] rounded-full bg-[#e8ede9]" />
+
+                  <div className="mt-4 border-t border-[#edf0ed] pt-3">
+                    <div className="h-[7px] w-[65px] rounded-full bg-[#e8ede9]" />
+
+                    <div className="mt-2 h-[17px] w-[75px] rounded-[4px] bg-[#dfe6e1]" />
+                  </div>
                 </div>
-              </div>
-
-              <div className="mt-5 flex items-end justify-between">
-                <div>
-                  <div className="h-3 w-20 rounded bg-gray-200" />
-                  <div className="mt-2 h-5 w-24 rounded bg-gray-200" />
-                </div>
-
-                <div className="h-6 w-14 rounded-full bg-gray-200" />
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </section>
 
-        {/* Second Section */}
-        <div className="mt-10">
-          <div className="h-6 w-44 rounded bg-gray-200" />
-          <div className="mt-2 h-3 w-52 rounded bg-gray-200" />
-        </div>
+          {/* Price Decreased Skeleton */}
+          <section className="mt-8">
+            <div className="h-[15px] w-[165px] rounded-[4px] bg-[#dce5de]" />
 
-        <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, index) => (
-            <div
-              key={index}
-              className="rounded-xl border border-gray-200 bg-white p-4"
-            >
-              <div className="flex items-start gap-3">
-                <div className="size-12 rounded-lg bg-gray-200" />
+            <div className="mt-2 h-[8px] w-[200px] rounded-full bg-[#e3e9e4]" />
 
-                <div className="flex-1">
-                  <div className="h-4 w-28 rounded bg-gray-200" />
-                  <div className="mt-2 h-3 w-16 rounded bg-gray-200" />
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="rounded-[10px] border border-[#e1e8e3] bg-white p-3"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="h-[42px] w-[42px] rounded-[8px] bg-[#e8eee9]" />
+
+                    <div className="h-[18px] w-[50px] rounded-full bg-[#e8eee9]" />
+                  </div>
+
+                  <div className="mt-4 h-[11px] w-[65%] rounded-[4px] bg-[#dfe6e1]" />
+
+                  <div className="mt-2 h-[7px] w-[30%] rounded-full bg-[#e8ede9]" />
+
+                  <div className="mt-4 border-t border-[#edf0ed] pt-3">
+                    <div className="h-[7px] w-[65px] rounded-full bg-[#e8ede9]" />
+
+                    <div className="mt-2 h-[17px] w-[75px] rounded-[4px] bg-[#dfe6e1]" />
+                  </div>
                 </div>
-              </div>
-
-              <div className="mt-5 h-5 w-24 rounded bg-gray-200" />
+              ))}
             </div>
-          ))}
+          </section>
         </div>
       </div>
     </main>
