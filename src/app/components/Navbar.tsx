@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 import { authClient } from "../../lib/auth-client";
 
 export default function Navbar() {
@@ -157,14 +158,28 @@ export default function Navbar() {
 
   const handleSignOut = async () => {
     try {
-      await authClient.signOut();
+      const { error } = await authClient.signOut();
+
+      if (error) {
+        toast.error(
+          error.message ||
+            "Failed to sign out. Please try again."
+        );
+        return;
+      }
 
       setProfileOpen(false);
+
+      toast.success("Signed out successfully!");
 
       router.push("/");
       router.refresh();
     } catch (error) {
       console.error("Sign out failed:", error);
+
+      toast.error(
+        "Failed to sign out. Please try again."
+      );
     }
   };
 
@@ -175,9 +190,7 @@ export default function Navbar() {
       ====================================== */}
 
       <div className="mx-auto flex h-[58px] w-full max-w-[900px] items-center justify-between gap-2 px-3 sm:h-[64px] sm:px-4">
-        {/* =====================================
-            LEFT SIDE
-        ====================================== */}
+        {/* LEFT SIDE */}
 
         <Link
           href="/"
@@ -231,9 +244,7 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* =====================================
-            RIGHT SIDE
-        ====================================== */}
+        {/* RIGHT SIDE */}
 
         <div className="flex shrink-0 items-center">
           {/* SESSION LOADING */}
@@ -245,9 +256,7 @@ export default function Navbar() {
               <div className="hidden h-[12px] w-[55px] animate-pulse rounded bg-[#eeeeee] sm:block" />
             </div>
           ) : session?.user ? (
-            /* =================================
-               LOGGED IN USER
-            ================================== */
+            /* LOGGED IN USER */
 
             <div
               ref={profileRef}
@@ -311,9 +320,7 @@ export default function Navbar() {
                 </svg>
               </button>
 
-              {/* =================================
-                  PROFILE DROPDOWN
-              ================================== */}
+              {/* PROFILE DROPDOWN */}
 
               {profileOpen && (
                 <div className="absolute right-0 top-[44px] z-[100] w-[210px] max-w-[calc(100vw-24px)] overflow-hidden rounded-[12px] border border-[#e5e5e5] bg-white shadow-[0_6px_20px_rgba(0,0,0,0.15)] sm:top-[48px]">
@@ -429,9 +436,7 @@ export default function Navbar() {
               )}
             </div>
           ) : (
-            /* =================================
-               LOGGED OUT USER
-            ================================== */
+            /* LOGGED OUT USER */
 
             <div className="flex items-center gap-2 sm:gap-6">
               <Link
@@ -488,32 +493,30 @@ export default function Navbar() {
           {/* FIRST COPY */}
 
           <div className="flex shrink-0 items-center">
-            {tickerItems.map(
-              (item, index) => (
-                <div
-                  key={`ticker-first-${index}`}
-                  className="flex shrink-0 items-center gap-1.5 whitespace-nowrap border-r border-[#e5e5e5] px-4 py-[7px] text-[10px] sm:gap-2 sm:px-6 sm:py-[8px] sm:text-[11px]"
+            {tickerItems.map((item, index) => (
+              <div
+                key={`ticker-first-${index}`}
+                className="flex shrink-0 items-center gap-1.5 whitespace-nowrap border-r border-[#e5e5e5] px-4 py-[7px] text-[10px] sm:gap-2 sm:px-6 sm:py-[8px] sm:text-[11px]"
+              >
+                <span className="text-[12px] sm:text-[13px]">
+                  {item.icon}
+                </span>
+
+                <span className="font-medium text-[#333333]">
+                  {item.name}
+                </span>
+
+                <span className="text-[#555555]">
+                  {item.price}
+                </span>
+
+                <span
+                  className={`font-semibold ${item.color}`}
                 >
-                  <span className="text-[12px] sm:text-[13px]">
-                    {item.icon}
-                  </span>
-
-                  <span className="font-medium text-[#333333]">
-                    {item.name}
-                  </span>
-
-                  <span className="text-[#555555]">
-                    {item.price}
-                  </span>
-
-                  <span
-                    className={`font-semibold ${item.color}`}
-                  >
-                    {item.change}
-                  </span>
-                </div>
-              )
-            )}
+                  {item.change}
+                </span>
+              </div>
+            ))}
           </div>
 
           {/* SECOND COPY */}
@@ -522,32 +525,30 @@ export default function Navbar() {
             className="flex shrink-0 items-center"
             aria-hidden="true"
           >
-            {tickerItems.map(
-              (item, index) => (
-                <div
-                  key={`ticker-second-${index}`}
-                  className="flex shrink-0 items-center gap-1.5 whitespace-nowrap border-r border-[#e5e5e5] px-4 py-[7px] text-[10px] sm:gap-2 sm:px-6 sm:py-[8px] sm:text-[11px]"
+            {tickerItems.map((item, index) => (
+              <div
+                key={`ticker-second-${index}`}
+                className="flex shrink-0 items-center gap-1.5 whitespace-nowrap border-r border-[#e5e5e5] px-4 py-[7px] text-[10px] sm:gap-2 sm:px-6 sm:py-[8px] sm:text-[11px]"
+              >
+                <span className="text-[12px] sm:text-[13px]">
+                  {item.icon}
+                </span>
+
+                <span className="font-medium text-[#333333]">
+                  {item.name}
+                </span>
+
+                <span className="text-[#555555]">
+                  {item.price}
+                </span>
+
+                <span
+                  className={`font-semibold ${item.color}`}
                 >
-                  <span className="text-[12px] sm:text-[13px]">
-                    {item.icon}
-                  </span>
-
-                  <span className="font-medium text-[#333333]">
-                    {item.name}
-                  </span>
-
-                  <span className="text-[#555555]">
-                    {item.price}
-                  </span>
-
-                  <span
-                    className={`font-semibold ${item.color}`}
-                  >
-                    {item.change}
-                  </span>
-                </div>
-              )
-            )}
+                  {item.change}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       </div>

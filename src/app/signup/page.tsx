@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 import { authClient } from "../../lib/auth-client";
 
 export default function SignUpPage() {
@@ -11,37 +12,39 @@ export default function SignUpPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] =
+    useState("");
 
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
   const [socialLoading, setSocialLoading] = useState<
     "google" | "github" | null
   >(null);
 
-  const handleSignUp = async () => {
-    setError("");
-    setSuccess("");
+  /* =========================================
+     EMAIL / PASSWORD SIGN UP
+  ========================================= */
 
+  const handleSignUp = async () => {
     if (
       !name.trim() ||
       !email.trim() ||
       !password ||
       !confirmPassword
     ) {
-      setError("Please fill in all fields.");
+      toast.error("Please fill in all fields.");
       return;
     }
 
     if (password.length < 8) {
-      setError("Password must be at least 8 characters.");
+      toast.error(
+        "Password must be at least 8 characters."
+      );
       return;
     }
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match.");
+      toast.error("Passwords do not match.");
       return;
     }
 
@@ -55,20 +58,20 @@ export default function SignUpPage() {
       });
 
       if (error) {
-        setError(
+        toast.error(
           error.message || "Failed to create account."
         );
         return;
       }
 
-      setSuccess("Account created successfully!");
+      toast.success("Account created successfully!");
 
       setTimeout(() => {
         router.push("/signin");
         router.refresh();
       }, 700);
     } catch {
-      setError(
+      toast.error(
         "Something went wrong. Please try again."
       );
     } finally {
@@ -76,11 +79,13 @@ export default function SignUpPage() {
     }
   };
 
+  /* =========================================
+     SOCIAL SIGN UP
+  ========================================= */
+
   const handleSocialSignUp = async (
     provider: "google" | "github"
   ) => {
-    setError("");
-    setSuccess("");
     setSocialLoading(provider);
 
     try {
@@ -88,20 +93,23 @@ export default function SignUpPage() {
         await authClient.signIn.social({
           provider,
           callbackURL: "/",
-          errorCallbackURL: "/signup",
+          errorCallbackURL:
+            "/signup?error=social_auth_failed",
         });
 
       if (error) {
-        setError(
+        toast.error(
           error.message ||
             `${provider} authentication failed.`
         );
+
         setSocialLoading(null);
       }
     } catch {
-      setError(
+      toast.error(
         "Social authentication failed. Please try again."
       );
+
       setSocialLoading(null);
     }
   };
@@ -113,9 +121,9 @@ export default function SignUpPage() {
     <main className="min-h-screen bg-green-50 px-3 py-6 sm:px-4 sm:py-10">
       <div className="mx-auto w-full max-w-sm">
         <div className="rounded-xl border border-gray-200 bg-white px-4 py-6 shadow-sm sm:px-6 sm:py-7">
-          {/* =========================
+          {/* =========================================
               HEADER
-          ========================== */}
+          ========================================= */}
 
           <div className="text-center">
             <div className="mx-auto flex size-11 items-center justify-center rounded-xl bg-green-600 text-[22px] text-white sm:size-12 sm:text-2xl">
@@ -127,13 +135,14 @@ export default function SignUpPage() {
             </h1>
 
             <p className="mx-auto mt-1 max-w-[280px] text-[11px] leading-4 text-gray-500 sm:text-xs">
-              Create your Bazar Dor account to continue.
+              Create your Bazar Dor account to
+              continue.
             </p>
           </div>
 
-          {/* =========================
+          {/* =========================================
               SIGN UP FORM
-          ========================== */}
+          ========================================= */}
 
           <form
             className="mt-5 sm:mt-6"
@@ -246,29 +255,7 @@ export default function SignUpPage() {
               />
             </div>
 
-            {/* ERROR */}
-
-            {error && (
-              <div
-                role="alert"
-                className="mt-4 break-words rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[10px] leading-4 text-red-600 sm:text-xs"
-              >
-                {error}
-              </div>
-            )}
-
-            {/* SUCCESS */}
-
-            {success && (
-              <div
-                role="status"
-                className="mt-4 break-words rounded-md border border-green-200 bg-green-50 px-3 py-2 text-[10px] leading-4 text-green-700 sm:text-xs"
-              >
-                {success}
-              </div>
-            )}
-
-            {/* CREATE ACCOUNT */}
+            {/* CREATE ACCOUNT BUTTON */}
 
             <button
               type="submit"
@@ -281,9 +268,9 @@ export default function SignUpPage() {
             </button>
           </form>
 
-          {/* =========================
+          {/* =========================================
               DIVIDER
-          ========================== */}
+          ========================================= */}
 
           <div className="my-5 flex items-center gap-3">
             <div className="h-px flex-1 bg-gray-200" />
@@ -295,9 +282,9 @@ export default function SignUpPage() {
             <div className="h-px flex-1 bg-gray-200" />
           </div>
 
-          {/* =========================
+          {/* =========================================
               SOCIAL SIGN UP
-          ========================== */}
+          ========================================= */}
 
           <div className="grid grid-cols-1 gap-2 min-[360px]:grid-cols-2 sm:gap-3">
             {/* GOOGLE */}
@@ -374,9 +361,9 @@ export default function SignUpPage() {
             </button>
           </div>
 
-          {/* =========================
+          {/* =========================================
               SIGN IN LINK
-          ========================== */}
+          ========================================= */}
 
           <p className="mt-5 text-center text-[11px] leading-5 text-gray-500 sm:mt-6 sm:text-xs">
             Already have an account?{" "}
@@ -389,9 +376,9 @@ export default function SignUpPage() {
           </p>
         </div>
 
-        {/* =========================
+        {/* =========================================
             BACK HOME
-        ========================== */}
+        ========================================= */}
 
         <div className="mt-4 text-center sm:mt-5">
           <Link

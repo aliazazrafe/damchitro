@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import toast from "react-hot-toast";
 import { authClient } from "../../lib/auth-client";
 
 export default function SignInPage() {
@@ -11,55 +12,56 @@ export default function SignInPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
   const [socialLoading, setSocialLoading] = useState<
     "google" | "github" | null
   >(null);
 
-  const callbackURL =
-    searchParams.get("callbackURL") || "/";
+  const callbackURL = searchParams.get("callbackURL") || "/";
+
+  useEffect(() => {
+    const reason = searchParams.get("reason");
+    const error = searchParams.get("error");
+
+    if (reason === "protected") {
+      toast.error("Please sign in to view this page.");
+    }
+
+    if (error) {
+      toast.error("Authentication failed. Please try again.");
+    }
+  }, [searchParams]);
 
   const handleSignIn = async () => {
-    setError("");
-    setSuccess("");
-
     if (!email.trim() || !password) {
-      setError(
-        "Please enter your email and password."
-      );
+      toast.error("Please enter your email and password.");
       return;
     }
 
     setLoading(true);
 
     try {
-      const { error } =
-        await authClient.signIn.email({
-          email: email.trim(),
-          password,
-        });
+      const { error } = await authClient.signIn.email({
+        email: email.trim(),
+        password,
+      });
 
       if (error) {
-        setError(
-          error.message ||
-            "Invalid email or password."
+        toast.error(
+          error.message || "Invalid email or password."
         );
         return;
       }
 
-      setSuccess("Signed in successfully!");
+      toast.success("Signed in successfully!");
 
       setTimeout(() => {
         router.push(callbackURL);
         router.refresh();
       }, 700);
     } catch {
-      setError(
-        "Something went wrong. Please try again."
-      );
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -68,43 +70,39 @@ export default function SignInPage() {
   const handleSocialSignIn = async (
     provider: "google" | "github"
   ) => {
-    setError("");
-    setSuccess("");
     setSocialLoading(provider);
 
     try {
-      const { error } =
-        await authClient.signIn.social({
-          provider,
-          callbackURL,
-          errorCallbackURL: "/signin",
-        });
+      const { error } = await authClient.signIn.social({
+        provider,
+        callbackURL,
+        errorCallbackURL: "/signin?error=social_auth_failed",
+      });
 
       if (error) {
-        setError(
+        toast.error(
           error.message ||
             `${provider} authentication failed.`
         );
+
         setSocialLoading(null);
       }
     } catch {
-      setError(
+      toast.error(
         "Social authentication failed. Please try again."
       );
+
       setSocialLoading(null);
     }
   };
 
-  const disabled =
-    loading || socialLoading !== null;
+  const disabled = loading || socialLoading !== null;
 
   return (
     <main className="min-h-screen bg-green-50 px-3 py-6 sm:px-4 sm:py-10">
       <div className="mx-auto w-full max-w-sm">
         <div className="rounded-xl border border-gray-200 bg-white px-4 py-6 shadow-sm sm:px-6 sm:py-7">
-          {/* =========================
-              HEADER
-          ========================== */}
+          {/* HEADER */}
 
           <div className="text-center">
             <div className="mx-auto flex size-11 items-center justify-center rounded-xl bg-green-600 text-[22px] text-white sm:size-12 sm:text-2xl">
@@ -116,14 +114,11 @@ export default function SignInPage() {
             </h1>
 
             <p className="mx-auto mt-1 max-w-[280px] text-[11px] leading-4 text-gray-500 sm:text-xs">
-              Sign in to your Bazar Dor account
-              to continue.
+              Sign in to your Bazar Dor account to continue.
             </p>
           </div>
 
-          {/* =========================
-              SIGN IN FORM
-          ========================== */}
+          {/* SIGN IN FORM */}
 
           <form
             className="mt-5 sm:mt-6"
@@ -146,9 +141,7 @@ export default function SignInPage() {
                 id="email"
                 type="email"
                 value={email}
-                onChange={(e) =>
-                  setEmail(e.target.value)
-                }
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 autoComplete="email"
                 required
@@ -171,9 +164,7 @@ export default function SignInPage() {
                 id="password"
                 type="password"
                 value={password}
-                onChange={(e) =>
-                  setPassword(e.target.value)
-                }
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
                 autoComplete="current-password"
                 required
@@ -182,28 +173,6 @@ export default function SignInPage() {
               />
             </div>
 
-            {/* ERROR */}
-
-            {error && (
-              <div
-                role="alert"
-                className="mt-4 break-words rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[10px] leading-4 text-red-600 sm:text-xs"
-              >
-                {error}
-              </div>
-            )}
-
-            {/* SUCCESS */}
-
-            {success && (
-              <div
-                role="status"
-                className="mt-4 break-words rounded-md border border-green-200 bg-green-50 px-3 py-2 text-[10px] leading-4 text-green-700 sm:text-xs"
-              >
-                {success}
-              </div>
-            )}
-
             {/* SIGN IN BUTTON */}
 
             <button
@@ -211,15 +180,11 @@ export default function SignInPage() {
               disabled={disabled}
               className="mt-5 flex h-10 w-full items-center justify-center rounded-md bg-green-600 px-3 text-[11px] font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60 sm:mt-6 sm:text-xs"
             >
-              {loading
-                ? "Signing In..."
-                : "Sign In"}
+              {loading ? "Signing In..." : "Sign In"}
             </button>
           </form>
 
-          {/* =========================
-              DIVIDER
-          ========================== */}
+          {/* DIVIDER */}
 
           <div className="my-5 flex items-center gap-3">
             <div className="h-px flex-1 bg-gray-200" />
@@ -231,9 +196,7 @@ export default function SignInPage() {
             <div className="h-px flex-1 bg-gray-200" />
           </div>
 
-          {/* =========================
-              SOCIAL LOGIN
-          ========================== */}
+          {/* SOCIAL LOGIN */}
 
           <div className="grid grid-cols-1 gap-2 min-[360px]:grid-cols-2 sm:gap-3">
             {/* GOOGLE */}
@@ -242,9 +205,7 @@ export default function SignInPage() {
               type="button"
               disabled={disabled}
               onClick={() =>
-                void handleSocialSignIn(
-                  "google"
-                )
+                void handleSocialSignIn("google")
               }
               className="flex h-10 min-w-0 items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-2 text-[11px] font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60 sm:text-xs"
             >
@@ -287,9 +248,7 @@ export default function SignInPage() {
               type="button"
               disabled={disabled}
               onClick={() =>
-                void handleSocialSignIn(
-                  "github"
-                )
+                void handleSocialSignIn("github")
               }
               className="flex h-10 min-w-0 items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-2 text-[11px] font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60 sm:text-xs"
             >
@@ -310,9 +269,7 @@ export default function SignInPage() {
             </button>
           </div>
 
-          {/* =========================
-              SIGN UP LINK
-          ========================== */}
+          {/* SIGN UP LINK */}
 
           <p className="mt-5 text-center text-[11px] leading-5 text-gray-500 sm:mt-6 sm:text-xs">
             Don&apos;t have an account?{" "}
@@ -325,9 +282,7 @@ export default function SignInPage() {
           </p>
         </div>
 
-        {/* =========================
-            BACK HOME
-        ========================== */}
+        {/* BACK HOME */}
 
         <div className="mt-4 text-center sm:mt-5">
           <Link

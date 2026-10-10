@@ -2,8 +2,13 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "../../lib/auth";
+import ConnectGitHub from "./ConnectGitHub";
 
-export default async function ProfilePage() {
+export default async function ProfilePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ github?: string }>;
+}) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -16,6 +21,8 @@ export default async function ProfilePage() {
     );
   }
 
+  const params = await searchParams;
+
   const userName =
     session.user.name?.trim() ||
     session.user.email?.split("@")[0] ||
@@ -24,8 +31,7 @@ export default async function ProfilePage() {
   const userEmail = session.user.email || "";
   const userImage = session.user.image || "";
 
-  const firstLetter =
-    userName.charAt(0).toUpperCase();
+  const firstLetter = userName.charAt(0).toUpperCase();
 
   return (
     <main className="min-h-screen bg-[#f1f6f2] px-3 py-5 sm:px-4 sm:py-8">
@@ -194,6 +200,17 @@ export default async function ProfilePage() {
                 </span>
               </div>
             </div>
+
+            {/* GITHUB CONNECTION */}
+
+            {params.github === "connected" && (
+              <div className="mt-5 rounded-[8px] border border-[#b9e6c6] bg-[#ecf9ef] px-4 py-3 text-[11px] text-[#08763a]">
+                Returned from GitHub. Check the linked account status
+                to confirm the connection.
+              </div>
+            )}
+
+            <ConnectGitHub />
 
             {/* BUTTON */}
 
